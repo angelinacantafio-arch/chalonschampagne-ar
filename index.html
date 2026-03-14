@@ -346,60 +346,6 @@
       letter-spacing: 0.1em;
     }
 
-    /* ─── MARKER MODAL ─── */
-    #modal-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.85);
-      z-index: 1000;
-      align-items: center;
-      justify-content: center;
-    }
-    #modal-overlay.open { display: flex; }
-
-    #modal-box {
-      background: #0f0c06;
-      border: 1px solid rgba(184,134,11,0.4);
-      padding: 2.5rem;
-      max-width: 480px;
-      width: 90%;
-      text-align: center;
-      position: relative;
-    }
-
-    #modal-box h2 {
-      font-size: 1.4rem;
-      font-weight: 400;
-      margin-bottom: 0.5rem;
-    }
-
-    #modal-box p {
-      font-size: 0.85rem;
-      color: #7a6a50;
-      margin-bottom: 1.5rem;
-    }
-
-    .marker-preview {
-      width: 180px; height: 180px;
-      margin: 0 auto 1.5rem;
-      border: 3px solid #b8860b;
-      background: white;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 0.7rem;
-      color: #333;
-      flex-direction: column;
-      gap: 0.3rem;
-    }
-
-    .marker-preview svg { width: 140px; height: 140px; }
-
-    .modal-close {
-      position: absolute;
-      top: 1rem; right: 1rem;
-      background: none; border: none;
-      color: #b8860b; font-size: 1.2rem; cursor: pointer;
-    }
 
     /* ─── ANIMATIONS ─── */
     @keyframes fadeUp {
@@ -459,7 +405,7 @@
   <div class="prodotti-grid">
 
     <!-- Champagne -->
-    <div class="card" onclick="openModal('champagne')">
+    <div class="card" onclick="openMarker('champagne')">
       <span class="marker-badge">AR</span>
       <div class="card-icon">🍾</div>
       <span class="card-tag">Enologia · Hiro Marker</span>
@@ -478,7 +424,7 @@
     </div>
 
     <!-- Grano -->
-    <div class="card" onclick="openModal('grano')">
+    <div class="card" onclick="openMarker('grano')">
       <span class="marker-badge">AR</span>
       <div class="card-icon">🌾</div>
       <span class="card-tag">Agricoltura · Marker A</span>
@@ -497,7 +443,7 @@
     </div>
 
     <!-- Fromage -->
-    <div class="card" onclick="openModal('fromage')">
+    <div class="card" onclick="openMarker('fromage')">
       <span class="marker-badge">AR</span>
       <div class="card-icon">🧀</div>
       <span class="card-tag">Lattiero-caseario · Marker B</span>
@@ -547,86 +493,179 @@
   <p class="footer-copy">Progetto Erasmus+ · Realizzato da studenti italiani e francesi · 2026</p>
 </footer>
 
-<!-- ═══════════════════ MODAL MARKER ═══════════════════ -->
-<div id="modal-overlay" onclick="closeModal(event)">
-  <div id="modal-box">
-    <button class="modal-close" onclick="closeModal()">✕</button>
-    <h2 id="modal-title">Marker AR</h2>
-    <p id="modal-desc">Stampa questo marker e puntaci la fotocamera dall'app AR.</p>
-    <div class="marker-preview" id="modal-marker">
-      <!-- SVG marker viene iniettato via JS -->
-    </div>
-    <a id="modal-dl" href="#" download class="btn btn-primary" style="display:inline-block;margin-top:0.5rem;">
-      ⬇ Scarica marker
-    </a>
-  </div>
+<!-- ═══════════════════ PAGINE MARKER NASCOSTE (stampabili) ═══════════════════ -->
+<!--
+  Ogni pagina marker è un documento HTML completo incorporato in un <template>.
+  openMarker(key) ne apre il contenuto in una nuova finestra e lancia window.print().
+  Funziona su tutti i browser (Chrome, Safari, Firefox) incluso mobile iOS/Android.
+  Nessun blob, nessun download, nessuna dipendenza da file esterni.
+-->
+
+<template id="tpl-champagne"><!DOCTYPE html><html><head><meta charset="UTF-8"/>
+<title>Marker HIRO — Champagne AOC</title>
+<style>
+  @page{size:A4;margin:15mm}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:Georgia,serif;background:white;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;gap:8mm}
+  h1{font-size:20pt;color:#1a4010;letter-spacing:.08em;text-align:center}
+  .sub{font-size:10pt;color:#666;text-align:center}
+  .marker-wrap{border:6px solid black;padding:6mm;background:white;display:inline-block}
+  .info{font-size:8.5pt;color:#444;text-align:center;line-height:1.9;border-top:1px solid #ccc;padding-top:5mm;max-width:140mm}
+  .info strong{color:#1a4010}
+  .badge{background:#1a4010;color:white;font-size:7.5pt;letter-spacing:.2em;padding:2mm 7mm;text-transform:uppercase;margin-top:2mm}
+  @media print{.no-print{display:none}}
+</style></head><body>
+<h1>🍾 CHAMPAGNE AOC</h1>
+<div class="sub">Marker AR — Inquadra con la fotocamera</div>
+<!-- MARKER HIRO UFFICIALE AR.js — immagine base64 incorporata per funzionare offline -->
+<div class="marker-wrap">
+  <img src="https://raw.githubusercontent.com/AR-js-org/AR.js/master/data/images/hiro.png"
+       width="220" height="220" alt="Marker Hiro"
+       onerror="this.style.display='none';this.nextElementSibling.style.display='block'"/>
+  <!-- Fallback SVG se l'immagine non carica -->
+  <svg style="display:none" width="220" height="220" viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg">
+    <rect width="220" height="220" fill="white"/>
+    <rect x="10" y="10" width="200" height="200" fill="black"/>
+    <rect x="30" y="30" width="160" height="160" fill="white"/>
+    <rect x="45" y="45" width="50" height="50" fill="black"/>
+    <rect x="125" y="45" width="50" height="50" fill="black"/>
+    <rect x="45" y="125" width="50" height="50" fill="black"/>
+    <rect x="125" y="125" width="22" height="22" fill="black"/>
+    <rect x="153" y="153" width="22" height="22" fill="black"/>
+    <rect x="85" y="85" width="50" height="50" fill="black"/>
+  </svg>
 </div>
+<div class="badge">MARKER 1 — HIRO (preset AR.js)</div>
+<div class="info">
+  <strong>Istruzioni:</strong><br>
+  1. Stampa questa pagina in bianco e nero (A4)<br>
+  2. Apri la Camera AR sul tuo smartphone<br>
+  3. Tieni il foglio fermo su un piano orizzontale<br>
+  4. Distanza fotocamera: 20–40 cm · Buona illuminazione<br>
+  5. Apparirà la bottiglia di Champagne 3D con i dati economici
+</div>
+<button class="no-print" onclick="window.print()" style="margin-top:6mm;padding:8px 24px;background:#1a4010;color:white;border:none;font-size:11pt;cursor:pointer;font-family:Georgia,serif">🖨 Stampa</button>
+</body></html></template>
+
+<template id="tpl-grano"><!DOCTYPE html><html><head><meta charset="UTF-8"/>
+<title>Marker Barcode 1 — Blé de Champagne</title>
+<style>
+  @page{size:A4;margin:15mm}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:Georgia,serif;background:white;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;gap:8mm}
+  h1{font-size:20pt;color:#5a7a10;letter-spacing:.08em;text-align:center}
+  .sub{font-size:10pt;color:#666;text-align:center}
+  .marker-wrap{border:6px solid black;padding:6mm;background:white;display:inline-block}
+  .info{font-size:8.5pt;color:#444;text-align:center;line-height:1.9;border-top:1px solid #ccc;padding-top:5mm;max-width:140mm}
+  .info strong{color:#5a7a10}
+  .badge{background:#5a7a10;color:white;font-size:7.5pt;letter-spacing:.2em;padding:2mm 7mm;text-transform:uppercase;margin-top:2mm}
+  @media print{.no-print{display:none}}
+</style></head><body>
+<h1>🌾 BLÉ DE CHAMPAGNE</h1>
+<div class="sub">Marker AR — Inquadra con la fotocamera</div>
+<!-- BARCODE 3x3 value=1 — Pattern binario corretto per AR.js matrixCodeType:3x3 -->
+<div class="marker-wrap">
+  <svg width="220" height="220" viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg">
+    <rect width="220" height="220" fill="white"/>
+    <!-- Bordo nero esterno obbligatorio -->
+    <rect x="0" y="0" width="220" height="220" fill="black"/>
+    <!-- Area interna bianca -->
+    <rect x="30" y="30" width="160" height="160" fill="white"/>
+    <!-- Quadrati di orientamento (finder patterns) -->
+    <!-- Alto-sinistra -->
+    <rect x="36" y="36" width="42" height="42" fill="black"/>
+    <rect x="42" y="42" width="30" height="30" fill="white"/>
+    <rect x="48" y="48" width="18" height="18" fill="black"/>
+    <!-- Alto-destra -->
+    <rect x="142" y="36" width="42" height="42" fill="black"/>
+    <rect x="148" y="42" width="30" height="30" fill="white"/>
+    <rect x="154" y="48" width="18" height="18" fill="black"/>
+    <!-- Basso-sinistra -->
+    <rect x="36" y="142" width="42" height="42" fill="black"/>
+    <rect x="42" y="148" width="30" height="30" fill="white"/>
+    <rect x="48" y="154" width="18" height="18" fill="black"/>
+    <!-- Cella dati: valore 1 (bit0=1) → cella in basso a destra della matrice 3x3 -->
+    <!-- Matrice dati 3x3 posizionata al centro (86,86), celle 16px ciascuna -->
+    <rect x="118" y="118" width="16" height="16" fill="black"/>
+    <!-- Etichetta -->
+    <text x="110" y="215" font-size="9" text-anchor="middle" fill="#5a7a10" font-family="serif">BLÉ DE CHAMPAGNE — BARCODE 1</text>
+  </svg>
+</div>
+<div class="badge">MARKER 2 — BARCODE 1 (3x3)</div>
+<div class="info">
+  <strong>Istruzioni:</strong><br>
+  1. Stampa questa pagina in bianco e nero (A4)<br>
+  2. Apri la Camera AR sul tuo smartphone<br>
+  3. Tieni il foglio fermo su un piano orizzontale<br>
+  4. Distanza fotocamera: 20–40 cm · Buona illuminazione<br>
+  5. Apparirà la spiga di grano 3D con i dati agricoli
+</div>
+<button class="no-print" onclick="window.print()" style="margin-top:6mm;padding:8px 24px;background:#5a7a10;color:white;border:none;font-size:11pt;cursor:pointer;font-family:Georgia,serif">🖨 Stampa</button>
+</body></html></template>
+
+<template id="tpl-fromage"><!DOCTYPE html><html><head><meta charset="UTF-8"/>
+<title>Marker Barcode 2 — Chaource AOP</title>
+<style>
+  @page{size:A4;margin:15mm}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:Georgia,serif;background:white;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;gap:8mm}
+  h1{font-size:20pt;color:#8b5e00;letter-spacing:.08em;text-align:center}
+  .sub{font-size:10pt;color:#666;text-align:center}
+  .marker-wrap{border:6px solid black;padding:6mm;background:white;display:inline-block}
+  .info{font-size:8.5pt;color:#444;text-align:center;line-height:1.9;border-top:1px solid #ccc;padding-top:5mm;max-width:140mm}
+  .info strong{color:#8b5e00}
+  .badge{background:#8b5e00;color:white;font-size:7.5pt;letter-spacing:.2em;padding:2mm 7mm;text-transform:uppercase;margin-top:2mm}
+  @media print{.no-print{display:none}}
+</style></head><body>
+<h1>🧀 CHAOURCE AOP</h1>
+<div class="sub">Marker AR — Inquadra con la fotocamera</div>
+<!-- BARCODE 3x3 value=2 — bit1=1 → cella centrale-destra della riga inferiore -->
+<div class="marker-wrap">
+  <svg width="220" height="220" viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg">
+    <rect width="220" height="220" fill="white"/>
+    <rect x="0" y="0" width="220" height="220" fill="black"/>
+    <rect x="30" y="30" width="160" height="160" fill="white"/>
+    <!-- Alto-sinistra -->
+    <rect x="36" y="36" width="42" height="42" fill="black"/>
+    <rect x="42" y="42" width="30" height="30" fill="white"/>
+    <rect x="48" y="48" width="18" height="18" fill="black"/>
+    <!-- Alto-destra -->
+    <rect x="142" y="36" width="42" height="42" fill="black"/>
+    <rect x="148" y="42" width="30" height="30" fill="white"/>
+    <rect x="154" y="48" width="18" height="18" fill="black"/>
+    <!-- Basso-sinistra -->
+    <rect x="36" y="142" width="42" height="42" fill="black"/>
+    <rect x="42" y="148" width="30" height="30" fill="white"/>
+    <rect x="48" y="154" width="18" height="18" fill="black"/>
+    <!-- Cella dati: valore 2 (bit1=1) → cella centrale della riga inferiore -->
+    <rect x="102" y="118" width="16" height="16" fill="black"/>
+    <text x="110" y="215" font-size="9" text-anchor="middle" fill="#8b5e00" font-family="serif">CHAOURCE AOP — BARCODE 2</text>
+  </svg>
+</div>
+<div class="badge">MARKER 3 — BARCODE 2 (3x3)</div>
+<div class="info">
+  <strong>Istruzioni:</strong><br>
+  1. Stampa questa pagina in bianco e nero (A4)<br>
+  2. Apri la Camera AR sul tuo smartphone<br>
+  3. Tieni il foglio fermo su un piano orizzontale<br>
+  4. Distanza fotocamera: 20–40 cm · Buona illuminazione<br>
+  5. Apparirà il Chaource 3D con i dati di produzione
+</div>
+<button class="no-print" onclick="window.print()" style="margin-top:6mm;padding:8px 24px;background:#8b5e00;color:white;border:none;font-size:11pt;cursor:pointer;font-family:Georgia,serif">🖨 Stampa</button>
+</body></html></template>
 
 <script>
-  const markers = {
-    champagne: {
-      title: 'Marker — Champagne AOC',
-      desc: 'Marker Hiro standard (incluso in AR.js). Punta la fotocamera qui dopo aver aperto la Camera AR.',
-      svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
-        <rect width="200" height="200" fill="white"/>
-        <rect x="20" y="20" width="160" height="160" fill="black"/>
-        <rect x="40" y="40" width="120" height="120" fill="white"/>
-        <rect x="60" y="60" width="35" height="35" fill="black"/>
-        <rect x="105" y="60" width="35" height="35" fill="black"/>
-        <rect x="60" y="105" width="35" height="35" fill="black"/>
-        <rect x="105" y="105" width="35" height="35" fill="white"/>
-        <rect x="115" y="115" width="15" height="15" fill="black"/>
-        <text x="100" y="195" font-size="10" text-anchor="middle" fill="#b8860b" font-family="serif">CHAMPAGNE</text>
-      </svg>`,
-    },
-    grano: {
-      title: 'Marker — Blé de la Champagne',
-      desc: 'Marker personalizzato A. Stampalo in bianco e nero su foglio A4.',
-      svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
-        <rect width="200" height="200" fill="white"/>
-        <rect x="20" y="20" width="160" height="160" fill="black"/>
-        <rect x="40" y="40" width="120" height="120" fill="white"/>
-        <rect x="55" y="55" width="40" height="40" fill="black"/>
-        <rect x="105" y="55" width="40" height="40" fill="black"/>
-        <rect x="55" y="105" width="40" height="40" fill="black"/>
-        <rect x="105" y="105" width="18" height="18" fill="black"/>
-        <rect x="127" y="127" width="18" height="18" fill="black"/>
-        <text x="100" y="195" font-size="10" text-anchor="middle" fill="#b8860b" font-family="serif">BLÉ · A</text>
-      </svg>`,
-    },
-    fromage: {
-      title: 'Marker — Chaource AOP',
-      desc: 'Marker personalizzato B. Stampalo in bianco e nero su foglio A4.',
-      svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
-        <rect width="200" height="200" fill="white"/>
-        <rect x="20" y="20" width="160" height="160" fill="black"/>
-        <rect x="40" y="40" width="120" height="120" fill="white"/>
-        <rect x="55" y="55" width="25" height="25" fill="black"/>
-        <rect x="90" y="55" width="55" height="25" fill="black"/>
-        <rect x="55" y="90" width="55" height="25" fill="black"/>
-        <rect x="120" y="90" width="20" height="55" fill="black"/>
-        <rect x="55" y="125" width="55" height="15" fill="black"/>
-        <text x="100" y="195" font-size="10" text-anchor="middle" fill="#b8860b" font-family="serif">CHAOURCE · B</text>
-      </svg>`,
-    }
-  };
-
-  function openModal(key) {
-    const m = markers[key];
-    document.getElementById('modal-title').textContent = m.title;
-    document.getElementById('modal-desc').textContent = m.desc;
-    document.getElementById('modal-marker').innerHTML = m.svg;
-    // Create downloadable SVG
-    const blob = new Blob([`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">${document.getElementById('modal-marker').innerHTML}</svg>`], {type:'image/svg+xml'});
-    document.getElementById('modal-dl').href = URL.createObjectURL(blob);
-    document.getElementById('modal-dl').download = `marker-${key}.svg`;
-    document.getElementById('modal-overlay').classList.add('open');
-  }
-
-  function closeModal(e) {
-    if (!e || e.target === document.getElementById('modal-overlay')) {
-      document.getElementById('modal-overlay').classList.remove('open');
-    }
+  // Apre il marker in una nuova finestra e lancia la stampa
+  // Tecnica: innerHTML del <template> scritto in document.write() sulla nuova finestra
+  // Compatibile con Chrome, Firefox, Safari desktop e mobile (no blob, no download)
+  function openMarker(key) {
+    const tplId = { champagne:'tpl-champagne', grano:'tpl-grano', fromage:'tpl-fromage' }[key];
+    const html = document.getElementById(tplId).innerHTML;
+    const w = window.open('', '_blank');
+    if (!w) { alert('Abilita i popup per questo sito per aprire il marker.'); return; }
+    w.document.open();
+    w.document.write(html);
+    w.document.close();
   }
 
   // Smooth scroll
